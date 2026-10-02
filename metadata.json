@@ -1,0 +1,7 @@
+{
+  "name": "HesapKutu – Ücretsiz Çevrimiçi Hesaplama Araçları",
+  "description": "Yüzde, KDV, kâr marjı, iskonto, metrekare, yakıt, hisse maliyet ve yapay zeka destekli tüm hesaplamalarınızı anında yapın.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
