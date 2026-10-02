@@ -4,7 +4,11 @@ export type CalculatorCategory =
   | 'Ticaret & E-Ticaret'
   | 'İnşaat & Üretim'
   | 'Otomotiv & Seyahat'
-  | 'Yatırım & Borsa';
+  | 'Yatırım & Borsa'
+  | 'E-Ticaret & Pazaryeri'
+  | 'Çalışma & İK'
+  | 'Enerji & Ev'
+  | 'Sağlık & Yaşam';
 
 export interface FAQItem {
   question: string;

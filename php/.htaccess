@@ -1,0 +1,26 @@
+# HesapKutu - Apache .htaccess Rewrite Kuralları
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Sitemap.xml yönlendirmesi
+    RewriteRule ^sitemap\.xml$ sitemap.php [L]
+
+    # Robots.txt doğrudan dosya veya dinamik
+    RewriteRule ^robots\.txt$ robots.txt [L]
+
+    # Gerçek dosya veya dizin varsa doğrudan sun
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Kalan tüm SEO uyumlu URL'leri index.php'ye aktar
+    RewriteRule ^(.*)$ index.php?route=$1 [QSA,L]
+</IfModule>
+
+# Güvenlik Başlıkları
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set X-Frame-Options "SAMEORIGIN"
+</IfModule>

@@ -18,7 +18,7 @@ app.use(express.json());
 // Initialize Gemini SDK
 const ai = new GoogleGenAI();
 
-// 12 core calculation tools list for dynamic sitemap and robots
+// 20 high-interest calculation tools list for dynamic sitemap and robots
 const CALCULATOR_SLUGS = [
   'yuzde-hesaplama',
   'yuzde-artis-hesaplama',
@@ -31,7 +31,15 @@ const CALCULATOR_SLUGS = [
   'yakit-hesaplama',
   'maas-zam-hesaplama',
   'hisse-maliyet-hesaplama',
-  'bilesik-getiri-hesaplama'
+  'bilesik-getiri-hesaplama',
+  'pazaryeri-komisyon-hesaplama',
+  'kidem-ihbar-tazminati-hesaplama',
+  'mevduat-faiz-hesaplama',
+  'kredi-taksit-hesaplama',
+  'elektrik-tuketim-hesaplama',
+  'kira-artis-hesaplama',
+  'vucut-kitle-indeksi-hesaplama',
+  'gunes-paneli-hesaplama'
 ];
 
 const STATIC_PAGES = [

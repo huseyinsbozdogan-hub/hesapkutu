@@ -68,6 +68,22 @@ export const CalculatorEngine: React.FC<CalculatorEngineProps> = ({ tool }) => {
       return <HisseMaliyetCalculator tool={tool} currentQuery={currentQuery} formatTRY={formatTRY} formatNumber={formatNumber} addToHistory={addToHistory} />;
     case 'bilesik-getiri-hesaplama':
       return <BilesikGetiriCalculator tool={tool} currentQuery={currentQuery} formatTRY={formatTRY} formatNumber={formatNumber} addToHistory={addToHistory} />;
+    case 'pazaryeri-komisyon-hesaplama':
+      return <PazaryeriCalculator tool={tool} currentQuery={currentQuery} formatTRY={formatTRY} formatNumber={formatNumber} addToHistory={addToHistory} />;
+    case 'kidem-ihbar-tazminati-hesaplama':
+      return <KidemCalculator tool={tool} currentQuery={currentQuery} formatTRY={formatTRY} formatNumber={formatNumber} addToHistory={addToHistory} />;
+    case 'mevduat-faiz-hesaplama':
+      return <MevduatCalculator tool={tool} currentQuery={currentQuery} formatTRY={formatTRY} formatNumber={formatNumber} addToHistory={addToHistory} />;
+    case 'kredi-taksit-hesaplama':
+      return <KrediCalculator tool={tool} currentQuery={currentQuery} formatTRY={formatTRY} formatNumber={formatNumber} addToHistory={addToHistory} />;
+    case 'elektrik-tuketim-hesaplama':
+      return <ElektrikCalculator tool={tool} currentQuery={currentQuery} formatTRY={formatTRY} formatNumber={formatNumber} addToHistory={addToHistory} />;
+    case 'kira-artis-hesaplama':
+      return <KiraCalculator tool={tool} currentQuery={currentQuery} formatTRY={formatTRY} formatNumber={formatNumber} addToHistory={addToHistory} />;
+    case 'vucut-kitle-indeksi-hesaplama':
+      return <VkiCalculator tool={tool} currentQuery={currentQuery} formatNumber={formatNumber} addToHistory={addToHistory} />;
+    case 'gunes-paneli-hesaplama':
+      return <GunesPaneliCalculator tool={tool} currentQuery={currentQuery} formatNumber={formatNumber} addToHistory={addToHistory} />;
     default:
       return <div className="p-4 text-slate-500">Hesaplama motoru yükleniyor...</div>;
   }
@@ -1542,3 +1558,625 @@ const BilesikGetiriCalculator = ({ tool, currentQuery, formatTRY, formatNumber }
     </div>
   );
 };
+
+// ==========================================
+// 13. PAZARYERİ KOMİSYON VE NET KÂR
+// ==========================================
+const PazaryeriCalculator = ({ tool, currentQuery, formatTRY, formatNumber }: any) => {
+  const [sellingPrice, setSellingPrice] = useState<number>(Number(currentQuery.sell) || 350);
+  const [buyCost, setBuyCost] = useState<number>(Number(currentQuery.buy) || 150);
+  const [commissionRate, setCommissionRate] = useState<number>(Number(currentQuery.com) || 18);
+  const [shippingCost, setShippingCost] = useState<number>(Number(currentQuery.ship) || 45);
+  const [serviceFee, setServiceFee] = useState<number>(Number(currentQuery.fee) || 5);
+
+  const commissionAmount = (sellingPrice * commissionRate) / 100;
+  const totalMarketplaceCut = commissionAmount + shippingCost + serviceFee;
+  const netProfit = sellingPrice - (buyCost + totalMarketplaceCut);
+  const netMargin = sellingPrice > 0 ? (netProfit / sellingPrice) * 100 : 0;
+  const profitOnCost = buyCost > 0 ? (netProfit / buyCost) * 100 : 0;
+  const isProfit = netProfit >= 0;
+
+  const summary = `Satış: ${formatTRY(sellingPrice)}, Alış: ${formatTRY(buyCost)} -> Kesintiler: ${formatTRY(totalMarketplaceCut)} (%${commissionRate} Komisyon + Kargo + Bedel) -> Net Kâr: ${formatTRY(netProfit)} (%${formatNumber(netMargin)} Marj)`;
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-200/90 p-5 sm:p-7 space-y-6">
+      {/* Preset Commission Categories */}
+      <div className="flex flex-wrap gap-2 text-xs">
+        <span className="text-slate-500 py-1 font-medium">Örnek Kategori:</span>
+        <button onClick={() => setCommissionRate(21)} className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-700">Giyim & Moda (%21)</button>
+        <button onClick={() => setCommissionRate(14)} className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-700">Elektronik (%14)</button>
+        <button onClick={() => setCommissionRate(18)} className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-700">Ev & Yaşam (%18)</button>
+        <button onClick={() => setCommissionRate(15)} className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-700">Kozmetik (%15)</button>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Müşteri Satış Fiyatı (TL)</label>
+          <input type="number" value={sellingPrice} onChange={(e) => setSellingPrice(Number(e.target.value))} className="w-full text-lg font-bold p-3 border border-slate-300 rounded-xl" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Ürün Alış / Maliyet (TL)</label>
+          <input type="number" value={buyCost} onChange={(e) => setBuyCost(Number(e.target.value))} className="w-full text-lg font-bold p-3 border border-slate-300 rounded-xl" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Komisyon Oranı (%)</label>
+          <div className="relative">
+            <input type="number" value={commissionRate} onChange={(e) => setCommissionRate(Number(e.target.value))} className="w-full text-lg font-bold p-3 border border-slate-300 rounded-xl pr-8" />
+            <span className="absolute right-3.5 top-3.5 text-slate-400 font-bold">%</span>
+          </div>
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Kargo Masrafı (TL)</label>
+          <input type="number" value={shippingCost} onChange={(e) => setShippingCost(Number(e.target.value))} className="w-full text-lg font-bold p-3 border border-slate-300 rounded-xl" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Hizmet / Barem Bedeli (TL)</label>
+          <input type="number" value={serviceFee} onChange={(e) => setServiceFee(Number(e.target.value))} className="w-full text-lg font-bold p-3 border border-slate-300 rounded-xl" />
+        </div>
+        <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs flex flex-col justify-center">
+          <span className="text-slate-500">Pazaryeri Toplam Kesintisi:</span>
+          <span className="text-base font-bold text-slate-900">{formatTRY(totalMarketplaceCut)}</span>
+        </div>
+      </div>
+
+      {/* Result Card */}
+      <div className={`rounded-2xl p-6 border ${isProfit ? 'bg-emerald-50/70 border-emerald-200' : 'bg-rose-50/70 border-rose-200'}`}>
+        <div className="flex flex-col sm:flex-row justify-between gap-4">
+          <div>
+            <span className={`text-xs font-bold uppercase tracking-wider ${isProfit ? 'text-emerald-800' : 'text-rose-800'}`}>
+              Cebinize Kalan Net Kâr
+            </span>
+            <div className={`text-3xl sm:text-4xl font-black mt-1 ${isProfit ? 'text-emerald-700' : 'text-rose-700'}`}>
+              {formatTRY(netProfit)}
+            </div>
+            <div className="text-xs text-slate-600 mt-1">
+              Net Kâr Marjı: <span className="font-bold">%{formatNumber(netMargin)}</span> | Maliyet Üzeri Kâr: <span className="font-bold">%{formatNumber(profitOnCost)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <CalculatorActions
+        toolSlug={tool.slug}
+        toolTitle={tool.title}
+        inputs={{ sell: sellingPrice, buy: buyCost, com: commissionRate, ship: shippingCost, fee: serviceFee }}
+        results={{ primaryValue: formatTRY(netProfit), netProfit, netMargin }}
+        summaryText={summary}
+      />
+    </div>
+  );
+};
+
+// ==========================================
+// 14. KIDEM VE İHBAR TAZMİNATI
+// ==========================================
+const KidemCalculator = ({ tool, currentQuery, formatTRY, formatNumber }: any) => {
+  const [years, setYears] = useState<number>(Number(currentQuery.y) || 3);
+  const [months, setMonths] = useState<number>(Number(currentQuery.m) || 6);
+  const [grossSalary, setGrossSalary] = useState<number>(Number(currentQuery.salary) || 30000);
+  const [additional, setAdditional] = useState<number>(Number(currentQuery.add) || 2000);
+  const [noticeWeeks, setNoticeWeeks] = useState<number>(Number(currentQuery.notice) || 6);
+
+  const totalMonthlyGross = grossSalary + additional;
+  const totalYears = years + months / 12;
+  const grossSeverance = totalYears * totalMonthlyGross;
+  const stampTax = grossSeverance * 0.00759; // Binde 7.59
+  const netSeverance = grossSeverance - stampTax;
+
+  // Notice Indemnity (Daily gross * 7 * weeks) - 15% income tax + stamp tax
+  const dailyGross = totalMonthlyGross / 30;
+  const grossNotice = dailyGross * (noticeWeeks * 7);
+  const noticeTax = grossNotice * 0.15;
+  const noticeStamp = grossNotice * 0.00759;
+  const netNotice = grossNotice - (noticeTax + noticeStamp);
+
+  const grandTotalTazminat = netSeverance + netNotice;
+
+  const summary = `${years} yıl ${months} ay çalışma, ${formatTRY(grossSalary)} brüt maaş -> Net Kıdem: ${formatTRY(netSeverance)}, Net İhbar: ${formatTRY(netNotice)} (Toplam: ${formatTRY(grandTotalTazminat)})`;
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-200/90 p-5 sm:p-7 space-y-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Çalışılan Yıl</label>
+          <input type="number" min={0} value={years} onChange={(e) => setYears(Number(e.target.value))} className="w-full text-lg font-bold p-3 border border-slate-300 rounded-xl" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Ek Çalışılan Ay (0 - 11)</label>
+          <input type="number" min={0} max={11} value={months} onChange={(e) => setMonths(Number(e.target.value))} className="w-full text-lg font-bold p-3 border border-slate-300 rounded-xl" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Son Aylık Brüt Maaş (TL)</label>
+          <input type="number" value={grossSalary} onChange={(e) => setGrossSalary(Number(e.target.value))} className="w-full text-lg font-bold p-3 border border-slate-300 rounded-xl" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Aylık Yan Haklar (Yol/Yemek TL)</label>
+          <input type="number" value={additional} onChange={(e) => setAdditional(Number(e.target.value))} className="w-full text-lg font-bold p-3 border border-slate-300 rounded-xl" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">İhbar Süresi (Hafta)</label>
+          <select value={noticeWeeks} onChange={(e) => setNoticeWeeks(Number(e.target.value))} className="w-full text-sm font-bold p-3.5 border border-slate-300 rounded-xl bg-white">
+            <option value={2}>6 aydan az (2 Hafta)</option>
+            <option value={4}>6 ay - 1.5 yıl arası (4 Hafta)</option>
+            <option value={6}>1.5 yıl - 3 yıl arası (6 Hafta)</option>
+            <option value={8}>3 yıldan fazla (8 Hafta)</option>
+            <option value={0}>İhbar Hesaplanmasın</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="bg-slate-900 text-white rounded-2xl p-6 shadow-md space-y-4">
+        <div className="flex flex-col sm:flex-row justify-between gap-4 border-b border-slate-800 pb-4">
+          <div>
+            <span className="text-xs uppercase text-emerald-400 font-semibold tracking-wider">Net Kıdem Tazminatı</span>
+            <div className="text-3xl font-black text-emerald-400 mt-1">{formatTRY(netSeverance)}</div>
+            <span className="text-xs text-slate-400">Damga vergisi kesintisi: {formatTRY(stampTax)}</span>
+          </div>
+          {noticeWeeks > 0 && (
+            <div className="text-right">
+              <span className="text-xs uppercase text-blue-400 font-semibold tracking-wider">Net İhbar Tazminatı ({noticeWeeks} Hafta)</span>
+              <div className="text-2xl font-black text-white mt-1">{formatTRY(netNotice)}</div>
+            </div>
+          )}
+        </div>
+        <div className="flex justify-between items-center text-xs text-slate-300 pt-1">
+          <span>Toplam Hak Kazanılan Net Tazminat Tutarı:</span>
+          <span className="text-lg font-black text-white font-mono">{formatTRY(grandTotalTazminat)}</span>
+        </div>
+      </div>
+
+      <CalculatorActions
+        toolSlug={tool.slug}
+        toolTitle={tool.title}
+        inputs={{ y: years, m: months, salary: grossSalary, add: additional, notice: noticeWeeks }}
+        results={{ primaryValue: formatTRY(grandTotalTazminat), netSeverance, netNotice }}
+        summaryText={summary}
+      />
+    </div>
+  );
+};
+
+// ==========================================
+// 15. MEVDUAT FAİZİ VE VADELİ GETİRİ
+// ==========================================
+const MevduatCalculator = ({ tool, currentQuery, formatTRY, formatNumber }: any) => {
+  const [principal, setPrincipal] = useState<number>(Number(currentQuery.p) || 100000);
+  const [annualRate, setAnnualRate] = useState<number>(Number(currentQuery.rate) || 45);
+  const [days, setDays] = useState<number>(Number(currentQuery.d) || 32);
+  const [taxWithholding, setTaxWithholding] = useState<number>(Number(currentQuery.tax) || 7.5);
+
+  const grossInterest = (principal * annualRate * days) / 36500;
+  const taxCut = (grossInterest * taxWithholding) / 100;
+  const netInterest = grossInterest - taxCut;
+  const totalBalance = principal + netInterest;
+
+  const summary = `${formatTRY(principal)} anapara, %${annualRate} faizle ${days} günde -> Net Faiz Getirisi: ${formatTRY(netInterest)} (Stopaj: ${formatTRY(taxCut)}, Toplam: ${formatTRY(totalBalance)})`;
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-200/90 p-5 sm:p-7 space-y-6">
+      {/* Vade hazır gün butonları */}
+      <div className="flex flex-wrap gap-2 text-xs">
+        <span className="text-slate-500 py-1 font-medium">Popüler Vadeler:</span>
+        <button onClick={() => setDays(32)} className={`px-3 py-1 rounded-lg font-semibold ${days === 32 ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-700'}`}>32 Gün</button>
+        <button onClick={() => setDays(46)} className={`px-3 py-1 rounded-lg font-semibold ${days === 46 ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-700'}`}>46 Gün</button>
+        <button onClick={() => setDays(92)} className={`px-3 py-1 rounded-lg font-semibold ${days === 92 ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-700'}`}>92 Gün (3 Ay)</button>
+        <button onClick={() => setDays(181)} className={`px-3 py-1 rounded-lg font-semibold ${days === 181 ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-700'}`}>181 Gün (6 Ay)</button>
+        <button onClick={() => setDays(365)} className={`px-3 py-1 rounded-lg font-semibold ${days === 365 ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-700'}`}>365 Gün (1 Yıl)</button>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Yatırılacak Anapara (TL)</label>
+          <input type="number" value={principal} onChange={(e) => setPrincipal(Number(e.target.value))} className="w-full text-lg font-bold p-3 border border-slate-300 rounded-xl" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Yıllık Faiz Oranı (%)</label>
+          <div className="relative">
+            <input type="number" step="0.5" value={annualRate} onChange={(e) => setAnnualRate(Number(e.target.value))} className="w-full text-lg font-bold p-3 border border-slate-300 rounded-xl pr-8" />
+            <span className="absolute right-3.5 top-3.5 text-slate-400 font-bold">%</span>
+          </div>
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Vade Süresi (Gün)</label>
+          <input type="number" min={1} value={days} onChange={(e) => setDays(Number(e.target.value))} className="w-full text-lg font-bold p-3 border border-slate-300 rounded-xl" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Stopaj Kesintisi (%)</label>
+          <select value={taxWithholding} onChange={(e) => setTaxWithholding(Number(e.target.value))} className="w-full text-sm font-bold p-3.5 border border-slate-300 rounded-xl bg-white">
+            <option value={7.5}>%7.5 (6 aya kadar vadeli)</option>
+            <option value={5}>%5 (1 yıla kadar vadeli)</option>
+            <option value={2.5}>%2.5 (1 yıldan uzun)</option>
+            <option value={0}>%0 (Stopaj Muaf)</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="bg-gradient-to-br from-emerald-500 to-teal-700 text-white rounded-2xl p-6 shadow-md flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div>
+          <span className="text-xs uppercase text-emerald-100 font-semibold tracking-wider">{days} Günlük Net Faiz Kazancı</span>
+          <div className="text-3xl sm:text-4xl font-black mt-1">{formatTRY(netInterest)}</div>
+          <div className="text-xs text-emerald-100 mt-1">Brüt Faiz: {formatTRY(grossInterest)} | Stopaj Vergisi: -{formatTRY(taxCut)}</div>
+        </div>
+        <div className="text-right sm:border-l sm:border-emerald-400/40 sm:pl-6">
+          <span className="text-xs text-emerald-100 block">Vade Sonu Toplam Para:</span>
+          <span className="text-2xl font-black text-white">{formatTRY(totalBalance)}</span>
+        </div>
+      </div>
+
+      <CalculatorActions
+        toolSlug={tool.slug}
+        toolTitle={tool.title}
+        inputs={{ p: principal, rate: annualRate, d: days, tax: taxWithholding }}
+        results={{ primaryValue: formatTRY(netInterest), netInterest, totalBalance }}
+        summaryText={summary}
+      />
+    </div>
+  );
+};
+
+// ==========================================
+// 16. KREDİ TAKSİT VE MALİYET
+// ==========================================
+const KrediCalculator = ({ tool, currentQuery, formatTRY, formatNumber }: any) => {
+  const [loanAmount, setLoanAmount] = useState<number>(Number(currentQuery.amt) || 100000);
+  const [months, setMonths] = useState<number>(Number(currentQuery.m) || 12);
+  const [interestRate, setInterestRate] = useState<number>(Number(currentQuery.r) || 3.5);
+  const [loanType, setLoanType] = useState<'personal' | 'housing'>((currentQuery.type as any) || 'personal');
+
+  // Vergiler: İhtiyaçta KKDF %15 + BSMV %5, Konutta %0
+  const taxMultiplier = loanType === 'personal' ? 1 + (0.15 + 0.05) : 1;
+  const effectiveMonthlyRate = (interestRate / 100) * taxMultiplier;
+
+  // Aylık taksit anüite formülü
+  let monthlyInstallment = 0;
+  if (effectiveMonthlyRate > 0) {
+    const factor = Math.pow(1 + effectiveMonthlyRate, months);
+    monthlyInstallment = loanAmount * ((effectiveMonthlyRate * factor) / (factor - 1));
+  } else {
+    monthlyInstallment = loanAmount / months;
+  }
+
+  const totalPayment = monthlyInstallment * months;
+  const totalInterestCost = totalPayment - loanAmount;
+
+  const summary = `${formatTRY(loanAmount)} kredi, %${interestRate} faizle ${months} ayda -> Aylık Taksit: ${formatTRY(monthlyInstallment)}, Toplam Geri Ödeme: ${formatTRY(totalPayment)} (Toplam Faiz: ${formatTRY(totalInterestCost)})`;
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-200/90 p-5 sm:p-7 space-y-6">
+      <div className="flex bg-slate-100 p-1 rounded-xl">
+        <button onClick={() => setLoanType('personal')} className={`flex-1 py-2 text-xs sm:text-sm font-semibold rounded-lg ${loanType === 'personal' ? 'bg-white text-blue-600 shadow-xs' : 'text-slate-600'}`}>
+          İhtiyaç & Taşıt Kredisi (KKDF + BSMV Dahil)
+        </button>
+        <button onClick={() => setLoanType('housing')} className={`flex-1 py-2 text-xs sm:text-sm font-semibold rounded-lg ${loanType === 'housing' ? 'bg-white text-blue-600 shadow-xs' : 'text-slate-600'}`}>
+          Konut Kredisi (Vergiden Muaf)
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Kredi Tutarı (TL)</label>
+          <input type="number" value={loanAmount} onChange={(e) => setLoanAmount(Number(e.target.value))} className="w-full text-lg font-bold p-3 border border-slate-300 rounded-xl" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Aylık Faiz Oranı (%)</label>
+          <div className="relative">
+            <input type="number" step="0.05" value={interestRate} onChange={(e) => setInterestRate(Number(e.target.value))} className="w-full text-lg font-bold p-3 border border-slate-300 rounded-xl pr-8" />
+            <span className="absolute right-3.5 top-3.5 text-slate-400 font-bold">%</span>
+          </div>
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Vade Süresi (Ay)</label>
+          <select value={months} onChange={(e) => setMonths(Number(e.target.value))} className="w-full text-sm font-bold p-3.5 border border-slate-300 rounded-xl bg-white">
+            <option value={12}>12 Ay (1 Yıl)</option>
+            <option value={24}>24 Ay (2 Yıl)</option>
+            <option value={36}>36 Ay (3 Yıl)</option>
+            <option value={48}>48 Ay (4 Yıl)</option>
+            <option value={60}>60 Ay (5 Yıl)</option>
+            <option value={120}>120 Ay (10 Yıl - Konut)</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="bg-slate-900 text-white rounded-2xl p-6 shadow-md flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div>
+          <span className="text-xs uppercase text-amber-400 font-semibold tracking-wider">Aylık Eşit Taksit Tutarı</span>
+          <div className="text-3xl sm:text-4xl font-black text-amber-400 mt-1">{formatTRY(monthlyInstallment)}</div>
+          <span className="text-xs text-slate-400 mt-1">Toplam Faiz & Vergi Yükü: {formatTRY(totalInterestCost)}</span>
+        </div>
+        <div className="text-right sm:border-l sm:border-slate-800 sm:pl-6">
+          <span className="text-xs text-slate-400 block">Bankaya Ödenecek Genel Toplam:</span>
+          <span className="text-2xl font-black text-white">{formatTRY(totalPayment)}</span>
+        </div>
+      </div>
+
+      <CalculatorActions
+        toolSlug={tool.slug}
+        toolTitle={tool.title}
+        inputs={{ amt: loanAmount, m: months, r: interestRate, type: loanType }}
+        results={{ primaryValue: formatTRY(monthlyInstallment), monthlyInstallment, totalPayment }}
+        summaryText={summary}
+      />
+    </div>
+  );
+};
+
+// ==========================================
+// 17. ELEKTRİK TÜKETİM VE FATURA
+// ==========================================
+const ElektrikCalculator = ({ tool, currentQuery, formatTRY, formatNumber }: any) => {
+  const [deviceWatt, setDeviceWatt] = useState<number>(Number(currentQuery.w) || 2000);
+  const [hoursPerDay, setHoursPerDay] = useState<number>(Number(currentQuery.h) || 6);
+  const [kwhPrice, setKwhPrice] = useState<number>(Number(currentQuery.price) || 2.6);
+
+  const dailyKwh = (deviceWatt / 1000) * hoursPerDay;
+  const monthlyKwh = dailyKwh * 30;
+  const monthlyCost = monthlyKwh * kwhPrice;
+  const yearlyCost = monthlyCost * 12;
+
+  const summary = `${deviceWatt}W cihaz, günde ${hoursPerDay} saat çalışırsa -> Aylık ${formatNumber(monthlyKwh)} kWh tüketir, Faturaya Etkisi: ${formatTRY(monthlyCost)} / Ay (Yıllık: ${formatTRY(yearlyCost)})`;
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-200/90 p-5 sm:p-7 space-y-6">
+      {/* Cihaz Şablonları */}
+      <div className="flex flex-wrap gap-2 text-xs">
+        <span className="text-slate-500 py-1 font-medium">Hazır Cihaz Seçin:</span>
+        <button onClick={() => { setDeviceWatt(2000); setHoursPerDay(6); }} className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg">Klima (2000W)</button>
+        <button onClick={() => { setDeviceWatt(150); setHoursPerDay(24); }} className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg">Buzdolabı (150W)</button>
+        <button onClick={() => { setDeviceWatt(350); setHoursPerDay(8); }} className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg">Oyun Bilgisayarı (350W)</button>
+        <button onClick={() => { setDeviceWatt(120); setHoursPerDay(5); }} className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg">LED TV (120W)</button>
+        <button onClick={() => { setDeviceWatt(2200); setHoursPerDay(1); }} className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg">Çamaşır Makinesi (2200W)</button>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Cihaz Gücü (Watt)</label>
+          <input type="number" value={deviceWatt} onChange={(e) => setDeviceWatt(Number(e.target.value))} className="w-full text-lg font-bold p-3 border border-slate-300 rounded-xl" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Günde Çalışma Süresi (Saat)</label>
+          <input type="number" min={0.5} max={24} step="0.5" value={hoursPerDay} onChange={(e) => setHoursPerDay(Number(e.target.value))} className="w-full text-lg font-bold p-3 border border-slate-300 rounded-xl" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Elektrik kWh Fiyatı (TL)</label>
+          <input type="number" step="0.1" value={kwhPrice} onChange={(e) => setKwhPrice(Number(e.target.value))} className="w-full text-lg font-bold p-3 border border-slate-300 rounded-xl" />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="p-4 rounded-xl bg-blue-50 border border-blue-200">
+          <span className="text-xs font-semibold text-blue-700 uppercase">Aylık Elektrik Tüketimi</span>
+          <div className="text-2xl font-black text-slate-900 mt-1">{formatNumber(monthlyKwh)} kWh</div>
+          <span className="text-[11px] text-blue-600 mt-1 block">Günlük {formatNumber(dailyKwh, 1)} kWh</span>
+        </div>
+        <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200">
+          <span className="text-xs font-semibold text-emerald-700 uppercase">Aylık Faturaya Etkisi</span>
+          <div className="text-2xl font-black text-emerald-700 mt-1">{formatTRY(monthlyCost)}</div>
+          <span className="text-[11px] text-emerald-600 mt-1 block">Her ay faturanıza eklenen tutar</span>
+        </div>
+        <div className="p-4 rounded-xl bg-purple-50 border border-purple-200">
+          <span className="text-xs font-semibold text-purple-700 uppercase">Yıllık Toplam Maliyet</span>
+          <div className="text-2xl font-black text-purple-950 mt-1">{formatTRY(yearlyCost)}</div>
+          <span className="text-[11px] text-purple-600 mt-1 block">12 aylık kümülatif fatura</span>
+        </div>
+      </div>
+
+      <CalculatorActions
+        toolSlug={tool.slug}
+        toolTitle={tool.title}
+        inputs={{ w: deviceWatt, h: hoursPerDay, price: kwhPrice }}
+        results={{ primaryValue: formatTRY(monthlyCost), monthlyCost, monthlyKwh }}
+        summaryText={summary}
+      />
+    </div>
+  );
+};
+
+// ==========================================
+// 18. KİRA ARTIŞ ORANI (TÜFE)
+// ==========================================
+const KiraCalculator = ({ tool, currentQuery, formatTRY, formatNumber }: any) => {
+  const [currentRent, setCurrentRent] = useState<number>(Number(currentQuery.rent) || 15000);
+  const [tufeRate, setTufeRate] = useState<number>(Number(currentQuery.tufe) || 62.5);
+
+  const increaseAmount = (currentRent * tufeRate) / 100;
+  const newRent = currentRent + increaseAmount;
+  const yearlyDiff = increaseAmount * 12;
+
+  const summary = `Mevcut Kira: ${formatTRY(currentRent)}, %${tufeRate} TÜFE artışı -> Zam Tutarı: ${formatTRY(increaseAmount)}, Yeni Kira: ${formatTRY(newRent)} (Yıllık Ek Maliyet: ${formatTRY(yearlyDiff)})`;
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-200/90 p-5 sm:p-7 space-y-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Mevcut Aylık Kira Bedeli (TL)</label>
+          <input type="number" value={currentRent} onChange={(e) => setCurrentRent(Number(e.target.value))} className="w-full text-lg font-bold p-3 border border-slate-300 rounded-xl" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">12 Aylık Ortalama TÜFE Oranı (%)</label>
+          <div className="relative">
+            <input type="number" step="0.1" value={tufeRate} onChange={(e) => setTufeRate(Number(e.target.value))} className="w-full text-lg font-bold p-3 border border-slate-300 rounded-xl pr-8" />
+            <span className="absolute right-3.5 top-3.5 text-slate-400 font-bold">%</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-gradient-to-br from-indigo-900 to-slate-900 text-white rounded-2xl p-6 shadow-md flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div>
+          <span className="text-xs uppercase text-indigo-300 font-semibold tracking-wider">Yasal Üst Sınır Yeni Kira Bedeli</span>
+          <div className="text-3xl sm:text-4xl font-black text-white mt-1">{formatTRY(newRent)}</div>
+          <span className="text-xs text-indigo-200 mt-1">Aylık Zam Artışı: +{formatTRY(increaseAmount)}</span>
+        </div>
+        <div className="text-right sm:border-l sm:border-slate-800 sm:pl-6">
+          <span className="text-xs text-slate-400 block">12 Aylık Toplam Ek Ödeme:</span>
+          <span className="text-2xl font-black text-amber-400">+{formatTRY(yearlyDiff)}</span>
+        </div>
+      </div>
+
+      <CalculatorActions
+        toolSlug={tool.slug}
+        toolTitle={tool.title}
+        inputs={{ rent: currentRent, tufe: tufeRate }}
+        results={{ primaryValue: formatTRY(newRent), newRent, increaseAmount }}
+        summaryText={summary}
+      />
+    </div>
+  );
+};
+
+// ==========================================
+// 19. VÜCUT KİTLE İNDEKSİ (VKİ) VE İDEAL KİLO
+// ==========================================
+const VkiCalculator = ({ tool, currentQuery, formatNumber }: any) => {
+  const [heightCm, setHeightCm] = useState<number>(Number(currentQuery.h) || 175);
+  const [weightKg, setWeightKg] = useState<number>(Number(currentQuery.w) || 85);
+  const [gender, setGender] = useState<'male' | 'female'>((currentQuery.g as any) || 'male');
+
+  const heightM = heightCm / 100;
+  const bmi = heightM > 0 ? weightKg / (heightM * heightM) : 0;
+
+  // İdeal kilo (21.75 BMI ortalaması)
+  const idealWeightMin = 18.5 * (heightM * heightM);
+  const idealWeightMax = 24.9 * (heightM * heightM);
+  const idealWeightTarget = 22 * (heightM * heightM);
+  const weightDifference = weightKg - idealWeightTarget;
+
+  let statusText = 'Normal Kilolu';
+  let statusColor = 'text-emerald-600 bg-emerald-50 border-emerald-200';
+
+  if (bmi < 18.5) {
+    statusText = 'Zayıf';
+    statusColor = 'text-amber-600 bg-amber-50 border-amber-200';
+  } else if (bmi >= 25 && bmi < 30) {
+    statusText = 'Fazla Kilolu';
+    statusColor = 'text-orange-600 bg-orange-50 border-orange-200';
+  } else if (bmi >= 30 && bmi < 35) {
+    statusText = '1. Derece Obez';
+    statusColor = 'text-rose-600 bg-rose-50 border-rose-200';
+  } else if (bmi >= 35) {
+    statusText = 'İleri Derece (Morbid) Obez';
+    statusColor = 'text-purple-600 bg-purple-50 border-purple-200';
+  }
+
+  const summary = `Boy: ${heightCm} cm, Kilo: ${weightKg} kg -> VKİ: ${formatNumber(bmi, 1)} (${statusText}). İdeal Kilo Aralığı: ${formatNumber(idealWeightMin, 1)} - ${formatNumber(idealWeightMax, 1)} kg`;
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-200/90 p-5 sm:p-7 space-y-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Boyunuz (cm)</label>
+          <input type="number" min={100} max={250} value={heightCm} onChange={(e) => setHeightCm(Number(e.target.value))} className="w-full text-lg font-bold p-3 border border-slate-300 rounded-xl" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Mevcut Kilonuz (kg)</label>
+          <input type="number" min={30} max={300} value={weightKg} onChange={(e) => setWeightKg(Number(e.target.value))} className="w-full text-lg font-bold p-3 border border-slate-300 rounded-xl" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Cinsiyet</label>
+          <div className="flex gap-2">
+            <button onClick={() => setGender('male')} className={`flex-1 p-3 rounded-xl font-bold text-xs ${gender === 'male' ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-700'}`}>Erkek</button>
+            <button onClick={() => setGender('female')} className={`flex-1 p-3 rounded-xl font-bold text-xs ${gender === 'female' ? 'bg-rose-500 text-white' : 'bg-slate-100 text-slate-700'}`}>Kadın</button>
+          </div>
+        </div>
+      </div>
+
+      <div className={`rounded-2xl p-6 border ${statusColor} flex flex-col sm:flex-row justify-between items-center gap-4`}>
+        <div>
+          <span className="text-xs uppercase font-bold tracking-wider">Vücut Kitle İndeksiniz (VKİ)</span>
+          <div className="text-4xl font-black mt-1">{formatNumber(bmi, 1)} <span className="text-lg font-bold">kg/m²</span></div>
+          <span className="text-sm font-bold mt-1 block">Kategori: {statusText}</span>
+        </div>
+        <div className="text-right sm:border-l sm:border-slate-300 sm:pl-6 space-y-1">
+          <span className="text-xs block text-slate-600">Önerilen İdeal Kilo Aralığınız:</span>
+          <span className="text-xl font-black text-slate-900">{formatNumber(idealWeightMin, 0)} - {formatNumber(idealWeightMax, 0)} kg</span>
+          <p className="text-xs text-slate-500">
+            {weightDifference > 0 ? `İdeal kilonuza ulaşmak için yaklaşık ${formatNumber(weightDifference, 1)} kg vermelisiniz.` : weightDifference < -3 ? `İdeal kilonuza ulaşmak için yaklaşık ${formatNumber(Math.abs(weightDifference), 1)} kg almalısınız.` : 'Tebrikler, ideal kilo aralığındasınız!'}
+          </p>
+        </div>
+      </div>
+
+      <CalculatorActions
+        toolSlug={tool.slug}
+        toolTitle={tool.title}
+        inputs={{ h: heightCm, w: weightKg, g: gender }}
+        results={{ primaryValue: formatNumber(bmi, 1), bmi, statusText }}
+        summaryText={summary}
+      />
+    </div>
+  );
+};
+
+// ==========================================
+// 20. GÜNEŞ PANELİ GÜÇ VE İHTİYAÇ
+// ==========================================
+const GunesPaneliCalculator = ({ tool, currentQuery, formatNumber }: any) => {
+  const [dailyKwh, setDailyKwh] = useState<number>(Number(currentQuery.kwh) || 10);
+  const [sunHours, setSunHours] = useState<number>(Number(currentQuery.sun) || 5);
+  const [panelWatt, setPanelWatt] = useState<number>(Number(currentQuery.watt) || 500);
+
+  // Günlük Wh ve %25 sistem kaybı / güvenlik payı
+  const requiredTotalWatt = sunHours > 0 ? ((dailyKwh * 1000) / sunHours) * 1.25 : 0;
+  const panelCount = panelWatt > 0 ? Math.ceil(requiredTotalWatt / panelWatt) : 0;
+  const totalKwp = (panelCount * panelWatt) / 1000;
+  const yearlyGenerationKwh = totalKwhYear(totalKwp, sunHours);
+
+  function totalKwhYear(kwp: number, hours: number) {
+    return kwp * hours * 365 * 0.8; // %80 ortalama mevsimsel verimlilik
+  }
+
+  const summary = `Günlük ${dailyKwh} kWh tüketim, günde ${sunHours} saat güneş ile -> ${panelCount} Adet ${panelWatt}W Panel gerekir (${formatNumber(totalKwp, 2)} kWp Sistem, Yıllık Üretim: ~${formatNumber(yearlyGenerationKwh, 0)} kWh)`;
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-200/90 p-5 sm:p-7 space-y-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Günlük Elektrik Tüketimi (kWh)</label>
+          <input type="number" min={1} value={dailyKwh} onChange={(e) => setDailyKwh(Number(e.target.value))} className="w-full text-lg font-bold p-3 border border-slate-300 rounded-xl" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Bölge Günlük Güneşlenme Süresi (Saat)</label>
+          <select value={sunHours} onChange={(e) => setSunHours(Number(e.target.value))} className="w-full text-sm font-bold p-3.5 border border-slate-300 rounded-xl bg-white">
+            <option value={4}>4.0 Saat (Marmara / Karadeniz)</option>
+            <option value={4.5}>4.5 Saat (İç Anadolu / Doğu)</option>
+            <option value={5}>5.0 Saat (Ege / Türkiye Ortalaması)</option>
+            <option value={5.5}>5.5 Saat (Akdeniz / Güneydoğu)</option>
+          </select>
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Seçilen Panel Gücü (Watt)</label>
+          <select value={panelWatt} onChange={(e) => setPanelWatt(Number(e.target.value))} className="w-full text-sm font-bold p-3.5 border border-slate-300 rounded-xl bg-white">
+            <option value={450}>450 Watt Monokristal Panel</option>
+            <option value={500}>500 Watt Half-Cut Panel</option>
+            <option value={550}>550 Watt Yüksek Verimli Panel</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="p-4 rounded-xl bg-amber-50 border border-amber-200">
+          <span className="text-xs font-semibold text-amber-700 uppercase">Gereken Panel Adedi</span>
+          <div className="text-3xl font-black text-amber-950 mt-1">{panelCount} Adet Panel</div>
+          <span className="text-[11px] text-amber-700 mt-1 block">{panelWatt}W monokristal solar panel</span>
+        </div>
+        <div className="p-4 rounded-xl bg-blue-50 border border-blue-200">
+          <span className="text-xs font-semibold text-blue-700 uppercase">Kurulacak Sistem Gücü</span>
+          <div className="text-3xl font-black text-blue-950 mt-1">{formatNumber(totalKwp, 2)} kWp</div>
+          <span className="text-[11px] text-blue-700 mt-1 block">İnverter ve çatı kapasitesi</span>
+        </div>
+        <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200">
+          <span className="text-xs font-semibold text-emerald-700 uppercase">Tahmini Yıllık Üretim</span>
+          <div className="text-3xl font-black text-emerald-800 mt-1">~{formatNumber(yearlyGenerationKwh, 0)} kWh</div>
+          <span className="text-[11px] text-emerald-700 mt-1 block">Yıllık bedava elektrik kazancı</span>
+        </div>
+      </div>
+
+      <CalculatorActions
+        toolSlug={tool.slug}
+        toolTitle={tool.title}
+        inputs={{ kwh: dailyKwh, sun: sunHours, watt: panelWatt }}
+        results={{ primaryValue: `${panelCount} Adet (${formatNumber(totalKwp, 2)} kWp)`, panelCount, totalKwp }}
+        summaryText={summary}
+      />
+    </div>
+  );
+};
+

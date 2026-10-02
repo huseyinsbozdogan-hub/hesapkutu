@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /admin
+Disallow: /hesabim
+Disallow: /account
+Disallow: /history
+Disallow: /login
+
+Sitemap: https://siteniz.com/sitemap.xml

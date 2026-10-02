@@ -441,15 +441,338 @@ export const CALCULATORS: CalculatorDefinition[] = [
       annualRate: 30,
       years: 5
     }
+  },
+  {
+    id: 'pazaryeri-komisyon',
+    slug: 'pazaryeri-komisyon-hesaplama',
+    title: 'Pazaryeri Komisyon ve Net Kâr Hesaplama',
+    seoTitle: 'Trendyol, Hepsiburada Komisyon ve Kâr Hesaplayıcı | HesapKutu',
+    metaDescription: 'Trendyol, Hepsiburada ve pazaryerlerinde satış fiyatı, komisyon oranı, kargo ve maliyetten sonra net kârınızı hesaplayın.',
+    category: 'E-Ticaret & Pazaryeri',
+    categorySlug: 'pazaryeri',
+    shortDescription: 'E-ticaret pazaryerlerinde satış komisyonu, kargo ücreti ve KDV sonrası elinize geçen net kârı ve kâr marjını hesaplayın.',
+    iconName: 'ShoppingBag',
+    formula: 'Net Kâr = Satış Fiyatı - (Ürün Maliyeti + Komisyon Tutarı + Kargo Ücreti + Hizmet Bedeli)',
+    howItWorks: [
+      'Ürününüzün pazaryerindeki KDV dahil satış fiyatını girin.',
+      'Alış / üretim maliyetinizi ve kargo masrafınızı belirtin.',
+      'Pazaryeri kategori komisyon oranını (%10 - %25 arası) ve işlem bedelini yazın.',
+      'Sistem elinize geçecek net kârı, kâr marjınızı ve pazaryerinin aldığı toplam kesintiyi anında raporlar.'
+    ],
+    example: {
+      scenario: 'Alışı 150 TL olan bir ürünü Trendyol\'da 350 TL\'ye satarken %18 komisyon ve 45 TL kargo ile net kâr nedir?',
+      calculation: 'Komisyon (%18): 63 TL. Kargo: 45 TL. Toplam Kesinti: 108 TL. Net Kâr: 350 - (150 + 108) = 92 TL',
+      result: '92 TL Net Kâr (%26,3 Net Kâr Marjı)'
+    },
+    faqs: [
+      {
+        question: 'Pazaryeri komisyonu KDV dahil fiyattan mı kesilir?',
+        answer: 'Evet, Türkiye\'deki başlıca pazaryerleri (Trendyol, Hepsiburada vb.) komisyonu nihai KDV dahil müşteri satış fiyatı üzerinden tahsil eder.'
+      },
+      {
+        question: 'Kargo barem sınırları nedir?',
+        answer: 'Belirli bir tutarın altındaki siparişlerde kargo ücreti genellikle tamamen veya kısmen satıcı tarafından karşılanır.'
+      }
+    ],
+    relatedSlugs: ['kar-marji-hesaplama', 'kdv-hesaplama', 'kar-zarar-hesaplama'],
+    isPopular: true,
+    defaultInputs: {
+      sellingPrice: 350,
+      buyCost: 150,
+      commissionRate: 18,
+      shippingCost: 45,
+      serviceFee: 5
+    }
+  },
+  {
+    id: 'kidem-ihbar',
+    slug: 'kidem-ihbar-tazminati-hesaplama',
+    title: 'Kıdem ve İhbar Tazminatı Hesaplama',
+    seoTitle: 'Kıdem ve İhbar Tazminatı Hesaplama – Net Tazminat Hesaplayıcı | HesapKutu',
+    metaDescription: 'Çalışma süreniz ve son brüt maaşınızla alacağınız brüt ve net kıdem tazminatı ile ihbar tazminatı tutarını hesaplayın.',
+    category: 'Çalışma & İK',
+    categorySlug: 'ik',
+    shortDescription: 'İşten ayrılma durumunda hak kazanılan yasal kıdem tazminatı tavanı, damga vergisi kesintisi ve ihbar süresi hesaplayıcısı.',
+    iconName: 'Briefcase',
+    formula: 'Kıdem Tazminatı = (Çalışılan Yıl × Giydirilmiş Brüt Ücret) - Damga Vergisi (%0,759)',
+    howItWorks: [
+      'İş yerindeki toplam çalışma sürenizi (yıl ve ay olarak) girin.',
+      'Son brüt maaşınızı ve aylık düzenli yan haklarınızı (yol, yemek) belirtin.',
+      'Varsa ihbar sürenizi seçin.',
+      'Yasal kıdem tavanı kontrol edilerek damga vergisi düşülmüş net tazminat hesaplanır.'
+    ],
+    example: {
+      scenario: '3 yıl 6 ay çalışan ve brüt maaşı 30.000 TL olan bir işçinin net kıdem tazminatı nedir?',
+      calculation: '3.5 yıl × 30.000 TL = 105.000 TL brüt. Damga vergisi (%0,759): 796,95 TL.',
+      result: '104.203 TL Net Kıdem Tazminatı'
+    },
+    faqs: [
+      {
+        question: 'Kıdem tazminatından hangi vergiler kesilir?',
+        answer: 'Kıdem tazminatından sadece binde 7,59 (oranında) Damga Vergisi kesilir; Gelir Vergisi veya SGK primi kesilmez.'
+      },
+      {
+        question: 'İhbar tazminatından vergi kesilir mi?',
+        answer: 'Evet, ihbar tazminatından hem Gelir Vergisi hem de Damga Vergisi kesilir.'
+      }
+    ],
+    relatedSlugs: ['maas-zam-hesaplama', 'yuzde-hesaplama'],
+    isPopular: true,
+    defaultInputs: {
+      years: 3,
+      months: 6,
+      grossSalary: 30000,
+      additionalBenefits: 2000,
+      noticeWeeks: 6
+    }
+  },
+  {
+    id: 'mevduat-faiz',
+    slug: 'mevduat-faiz-hesaplama',
+    title: 'Mevduat Faizi ve Vadeli Getiri Hesaplama',
+    seoTitle: 'Vadeli Mevduat Faizi Hesaplama – Güncel Net Getiri | HesapKutu',
+    metaDescription: 'Bankaların vadeli mevduat faiz oranlarıyla 32, 46, 92 gün ve 1 yıl sonundaki net faiz kazancınızı ve stopaj kesintisini hesaplayın.',
+    category: 'Para & Finans',
+    categorySlug: 'finans',
+    shortDescription: 'Tasarruflarınızın banka vadeli mevduat faiz oranı ve stopaj kesintisi sonrası net faiz getirisini hesaplar.',
+    iconName: 'Coins',
+    formula: 'Net Faiz = [ Anapara × (Faiz Oranı / 100) × (Gün / 365) ] × (1 - Stopaj / 100)',
+    howItWorks: [
+      'Bankaya yatıracağınız anapara tutarını girin.',
+      'Vade gününü (standart 32 gün, 46 gün, 92 gün veya özel gün) seçin.',
+      'Yıllık mevduat faiz oranını (%) ve güncel stopaj oranını belirtin.',
+      'Vade sonunda elinize geçecek net faiz kârı ve toplam bakiye anında hesaplanır.'
+    ],
+    example: {
+      scenario: '100.000 TL anapara, yıllık %45 faiz oranıyla 32 günlük vadede ne kadar net faiz getirir?',
+      calculation: 'Brüt Faiz: (100.000 × 45 × 32) / 36500 = 3.945 TL. Stopaj (%7.5): 295 TL. Net: 3.650 TL',
+      result: 'Net Faiz: 3.650 TL (Vade Sonu: 103.650 TL)'
+    },
+    faqs: [
+      {
+        question: 'Vadeli mevduatta stopaj oranı ne kadardır?',
+        answer: 'Mevzuat değişikliklerine göre 6 aya kadar vadelerde genellikle %7,5 ile %10 arasında stopaj kesintisi uygulanır.'
+      }
+    ],
+    relatedSlugs: ['bilesik-getiri-hesaplama', 'kredi-taksit-hesaplama', 'kar-zarar-hesaplama'],
+    isPopular: true,
+    defaultInputs: {
+      principal: 100000,
+      annualRate: 45,
+      days: 32,
+      taxWithholding: 7.5
+    }
+  },
+  {
+    id: 'kredi-taksit',
+    slug: 'kredi-taksit-hesaplama',
+    title: 'Kredi Taksit ve Maliyet Hesaplama',
+    seoTitle: 'Kredi Taksit Hesaplama – İhtiyaç, Konut ve Taşıt Kredisi | HesapKutu',
+    metaDescription: 'Kredi tutarı, vade ve faiz oranını girerek aylık taksit tutarını, toplam geri ödemeyi ve faiz maliyetini hesaplayın.',
+    category: 'Para & Finans',
+    categorySlug: 'finans',
+    shortDescription: 'İhtiyaç, konut veya taşıt kredileri için KKDF ve BSMV vergileri dahil aylık eşit taksit tutarı ve ödeme planı.',
+    iconName: 'Receipt',
+    formula: 'Aylık Taksit = Kredi Tutarı × [ (r × (1 + r)^n) ÷ ((1 + r)^n - 1) ]',
+    howItWorks: [
+      'Çekmek istediğiniz kredi tutarını (TL) yazın.',
+      'Vade süresini (ay) ve bankanın aylık faiz oranını (%) belirtin.',
+      'Kredi türünü (İhtiyaç: %15 KKDF + %5 BSMV, Konut: Vergisiz) seçin.',
+      'Aylık eşit taksit, toplam faiz yükü ve bankaya ödenecek genel toplam tutar hesaplanır.'
+    ],
+    example: {
+      scenario: '100.000 TL ihtiyaç kredisi, 12 ay vade ve %3,5 aylık faiz ile aylık taksit ne kadardır?',
+      calculation: 'Vergiler dahil efektif faiz oranıyla anüite formülü uygulanır.',
+      result: 'Aylık Taksit: ~11.250 TL (Toplam Ödeme: ~135.000 TL)'
+    },
+    faqs: [
+      {
+        question: 'Konut kredilerinde KKDF ve BSMV kesilir mi?',
+        answer: 'Hayır, Türkiye\'de konut kredileri KKDF ve BSMV vergisinden muaftır.'
+      }
+    ],
+    relatedSlugs: ['mevduat-faiz-hesaplama', 'bilesik-getiri-hesaplama', 'yuzde-hesaplama'],
+    isPopular: true,
+    defaultInputs: {
+      loanAmount: 100000,
+      months: 12,
+      interestRate: 3.5,
+      loanType: 'personal' // 'personal' or 'housing'
+    }
+  },
+  {
+    id: 'elektrik-tuketim',
+    slug: 'elektrik-tuketim-hesaplama',
+    title: 'Elektrik Tüketim ve Fatura Hesaplama',
+    seoTitle: 'Elektrik Faturası ve Cihaz Tüketim Hesaplama | HesapKutu',
+    metaDescription: 'Klima, buzdolabı, bilgisayar gibi elektrikli aletlerin Watt gücüne göre aylık elektrik faturasına etkisini hesaplayın.',
+    category: 'Enerji & Ev',
+    categorySlug: 'enerji',
+    shortDescription: 'Ev ve iş yerindeki elektrikli cihazların günlük ve aylık elektrik tüketimini (kWh) ve TL faturasını hesaplar.',
+    iconName: 'Zap',
+    formula: 'Aylık Tutar = (Güç Watt ÷ 1000) × Günlük Saat × 30 Gün × kWh Elektrik Fiyatı',
+    howItWorks: [
+      'Cihazın etiketindeki gücü (Watt) veya hazır cihaz şablonunu seçin (Örn: Klima 2000W, TV 120W).',
+      'Cihazın günde ortalama kaç saat çalıştığını girin.',
+      'Güncel mesken 1 kWh elektrik fiyatını belirtin.',
+      'Günlük, aylık kWh tüketimi ve faturaya yansıyan tutar anında listelenir.'
+    ],
+    example: {
+      scenario: '2000 Watt gücünde bir klima günde 6 saat çalışırsa 1 kWh fiyatı 2,60 TL iken aylık faturası nedir?',
+      calculation: '(2000 ÷ 1000) × 6 saat × 30 gün = 360 kWh. 360 × 2,60 TL = 936 TL',
+      result: '936 TL / Ay (Aylık 360 kWh Tüketim)'
+    },
+    faqs: [
+      {
+        question: '1 kWh elektrik kaç Watt eder?',
+        answer: '1 kWh (kilovatsaat), 1000 Watt gücündeki bir cihazın 1 saat boyunca kesintisiz çalışmasıyla harcadığı enerji miktarıdır.'
+      }
+    ],
+    relatedSlugs: ['gunes-paneli-hesaplama', 'yakit-hesaplama'],
+    isPopular: true,
+    defaultInputs: {
+      deviceWatt: 2000,
+      hoursPerDay: 6,
+      kwhPrice: 2.6
+    }
+  },
+  {
+    id: 'kira-artis',
+    slug: 'kira-artis-hesaplama',
+    title: 'Kira Artış Oranı Hesaplama (TÜFE)',
+    seoTitle: 'Kira Artış Oranı Hesaplama – Güncel TÜFE Kira Zammı | HesapKutu',
+    metaDescription: 'Ev ve iş yeri kiralarında 12 aylık ortalama TÜFE oranına göre yasal kira zam tutarını ve yeni aylık kirayı hesaplayın.',
+    category: 'Para & Finans',
+    categorySlug: 'finans',
+    shortDescription: 'Konut ve çatılı iş yerleri için Borçlar Kanunu\'na uygun 12 aylık TÜFE ortalaması tavan kira artış hesaplayıcısı.',
+    iconName: 'Building',
+    formula: 'Yeni Kira = Mevcut Kira × (1 + TÜFE Oranı / 100)',
+    howItWorks: [
+      'Mevcut aylık kira bedelinizi girin.',
+      'TÜİK tarafından açıklanan 12 aylık ortalama TÜFE değişim oranını (%) belirtin.',
+      'Yasal üst sınır zam tutarı ve bir sonraki kira dönemi ödenecek yeni kira tutarı hesaplanır.'
+    ],
+    example: {
+      scenario: 'Mevcut kirası 15.000 TL olan bir evin TÜFE 12 aylık ortalaması %62,5 ise yeni kira ne olur?',
+      calculation: 'Zam Tutarı: 15.000 × 0,625 = 9.375 TL. Yeni Kira: 15.000 + 9.375 = 24.375 TL',
+      result: 'Yeni Kira: 24.375 TL (+9.375 TL Zam)'
+    },
+    faqs: [
+      {
+        question: 'Kira artışında hangi TÜFE oranı esas alınır?',
+        answer: 'Türk Borçlar Kanunu Madde 344 gereğince, bir önceki kira yılının "12 aylık ortalamalara göre TÜFE değişim oranı" yasal üst sınırdır.'
+      }
+    ],
+    relatedSlugs: ['maas-zam-hesaplama', 'yuzde-artis-hesaplama', 'yuzde-hesaplama'],
+    isPopular: true,
+    defaultInputs: {
+      currentRent: 15000,
+      tufeRate: 62.5
+    }
+  },
+  {
+    id: 'vucut-kitle',
+    slug: 'vucut-kitle-indeksi-hesaplama',
+    title: 'Vücut Kitle İndeksi (VKİ) ve İdeal Kilo',
+    seoTitle: 'Vücut Kitle İndeksi (VKİ) ve İdeal Kilo Hesaplama | HesapKutu',
+    metaDescription: 'Boy ve kilonuzu girerek Vücut Kitle İndeksinizi (BMI), Dünya Sağlık Örgütü kilo kategorinizi ve ideal kilonuzu öğrenin.',
+    category: 'Sağlık & Yaşam',
+    categorySlug: 'saglik',
+    shortDescription: 'Dünya Sağlık Örgütü (WHO) kriterlerine göre boy-kilo oranını, ideal kilo aralığını ve yağ sınıflandırmasını hesaplar.',
+    iconName: 'Activity',
+    formula: 'VKİ = Kilo (kg) ÷ [ Boy (m) × Boy (m) ]',
+    howItWorks: [
+      'Boyunuzu santimetre (cm) ve mevcut kilonuzu kilogram (kg) olarak girin.',
+      'VKİ değeriniz otomatik hesaplanıp Zayıf, Normal, Fazla Kilolu veya Obez kategorisine yerleştirilir.',
+      'Sağlıklı kalabilmek için olmanız gereken ideal kilo aralığı ve fark gösterilir.'
+    ],
+    example: {
+      scenario: '175 cm boyunda ve 85 kg ağırlığındaki bir bireyin VKİ değeri ve durumu nedir?',
+      calculation: 'Boy m: 1.75. VKİ = 85 / (1.75 × 1.75) = 85 / 3.0625 = 27.75',
+      result: 'VKİ: 27,75 (Fazla Kilolu - İdeal Kilo: ~68 kg)'
+    },
+    faqs: [
+      {
+        question: 'Normal ve sağlıklı VKİ aralığı kaçtır?',
+        answer: '18,5 ile 24,9 arasındaki değerler sağlıklı normal kilo kabul edilir. 25-29,9 fazla kilolu, 30 üzeri ise obezite sınıfındadır.'
+      }
+    ],
+    relatedSlugs: ['metrekare-hesaplama', 'yuzde-hesaplama'],
+    isPopular: true,
+    defaultInputs: {
+      heightCm: 175,
+      weightKg: 85,
+      gender: 'male'
+    }
+  },
+  {
+    id: 'gunes-paneli',
+    slug: 'gunes-paneli-hesaplama',
+    title: 'Güneş Paneli Güç ve İhtiyaç Hesaplama',
+    seoTitle: 'Güneş Paneli İhtiyaç ve Güç Hesaplama – Güneş Enerjisi | HesapKutu',
+    metaDescription: 'Ev, bağ evi veya karavan için günlük elektrik tüketiminize göre gereken güneş paneli sayısını, akü ve inverter gücünü hesaplayın.',
+    category: 'Enerji & Ev',
+    categorySlug: 'enerji',
+    shortDescription: 'Müstakil ev, tarımsal sulama veya karavan için gerekli solar panel gücünü (kWp) ve panel adedini hesaplar.',
+    iconName: 'Sun',
+    formula: 'Gereken Panel Gücü (W) = (Günlük Tüketim Wh ÷ Günlük Güneşlenme Saati) × 1,25 Güvenlik Payı',
+    howItWorks: [
+      'Günlük elektrik tüketiminizi (kWh) girin (Faturanızdan aylık kWh / 30 ile bulabilirsiniz).',
+      'Bulunduğunuz ilin ortalama günlük güneşlenme süresini (saat) seçin (Türkiye ortalaması ~4.5 - 5 saat).',
+      'Kullanmak istediğiniz panel gücünü (örneğin 450W veya 550W) belirtin.',
+      'Gereken toplam solar sistem gücü (kWp), gereken panel sayısı ve yıllık tahmini elektrik üretimi hesaplanır.'
+    ],
+    example: {
+      scenario: 'Günde 10 kWh tüketen bir bağ evi için 5 saat güneşlenme ve 500W panelle kaç panel gerekir?',
+      calculation: 'Sistem: (10.000 Wh / 5 saat) × 1,25 = 2.500 Watt. 2.500 / 500W = 5 Panel.',
+      result: '5 Adet 500W Panel (2,5 kWp Sistem)'
+    },
+    faqs: [
+      {
+        question: 'Türkiye\'de ortalama güneşlenme süresi kaç saattir?',
+        answer: 'Türkiye genelinde yıllık ortalama güneşlenme süresi günlük 4,5 ile 5,5 saat arasındadır. Akdeniz ve Güneydoğu\'da bu süre 6 saati bulabilir.'
+      }
+    ],
+    relatedSlugs: ['elektrik-tuketim-hesaplama', 'metrekare-hesaplama', 'kar-marji-hesaplama'],
+    isPopular: true,
+    defaultInputs: {
+      dailyKwh: 10,
+      sunHours: 5,
+      panelWatt: 500
+    }
   }
 ];
 
 export const CATEGORIES: { name: CalculatorDefinition['category']; slug: string; description: string; icon: string }[] = [
   {
+    name: 'E-Ticaret & Pazaryeri',
+    slug: 'pazaryeri',
+    description: 'Trendyol, Hepsiburada komisyon, kargo ve net kâr hesaplamaları.',
+    icon: 'ShoppingBag'
+  },
+  {
     name: 'Para & Finans',
     slug: 'finans',
-    description: 'KDV, kâr/zarar, vergi ve maaş gibi finansal operasyon hesaplamaları.',
+    description: 'KDV, kâr/zarar, vadeli mevduat faizi ve kredi taksit hesaplamaları.',
     icon: 'Wallet'
+  },
+  {
+    name: 'Çalışma & İK',
+    slug: 'ik',
+    description: 'Kıdem ve ihbar tazminatı, maaş zam oranı ve net gelir hesaplayıcı.',
+    icon: 'Briefcase'
+  },
+  {
+    name: 'Enerji & Ev',
+    slug: 'enerji',
+    description: 'Elektrik faturası, cihaz tüketimi ve güneş paneli fizibilite araçları.',
+    icon: 'Zap'
+  },
+  {
+    name: 'Sağlık & Yaşam',
+    slug: 'saglik',
+    description: 'Vücut kitle indeksi (VKİ), ideal kilo ve sağlıklı yaşam oranları.',
+    icon: 'Activity'
   },
   {
     name: 'Matematik & Temel',
@@ -461,7 +784,7 @@ export const CATEGORIES: { name: CalculatorDefinition['category']; slug: string;
     name: 'Ticaret & E-Ticaret',
     slug: 'ticaret',
     description: 'İskonto, kâr marjı, ürün maliyet ve fiyatlandırma hesaplamaları.',
-    icon: 'ShoppingBag'
+    icon: 'Coins'
   },
   {
     name: 'İnşaat & Üretim',

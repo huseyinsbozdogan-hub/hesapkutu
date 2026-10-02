@@ -33,9 +33,7 @@ export const AdminPage: React.FC = () => {
   const [passcode, setPasscode] = useState('');
   const [passError, setPassError] = useState(false);
 
-  const [activeTab, setActiveTab] = useState<'tools' | 'seo' | 'analytics' | 'users'>(
-    'tools'
-  );
+  const [activeTab, setActiveTab] = useState<'tools' | 'seo' | 'analytics' | 'php'>('tools');
 
   const [editingSlug, setEditingSlug] = useState<string | null>(null);
   const [tempTitle, setTempTitle] = useState('');
@@ -206,6 +204,18 @@ export const AdminPage: React.FC = () => {
         >
           <BarChart3 className="w-4 h-4" />
           <span>Kullanım İstatistikleri & Popülerlik</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('php')}
+          className={`flex items-center gap-1.5 px-4 py-2.5 border-b-2 transition-colors whitespace-nowrap ${
+            activeTab === 'php'
+              ? 'border-emerald-600 text-emerald-700'
+              : 'border-transparent text-slate-500 hover:text-slate-900'
+          }`}
+        >
+          <span className="font-bold font-mono text-emerald-600">&lt;?php&gt;</span>
+          <span>PHP Sürümü & Hosting Kurulumu</span>
         </button>
       </div>
 
@@ -415,6 +425,61 @@ export const AdminPage: React.FC = () => {
                   </div>
                 );
               })}
+          </div>
+        </div>
+      )}
+
+      {/* Tab 4: PHP Sürümü & Hosting */}
+      {activeTab === 'php' && (
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-6 shadow-2xs">
+          <div className="border-b border-slate-100 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 className="font-bold text-base text-slate-900 flex items-center gap-2">
+                <span className="text-emerald-600 font-mono font-bold">&lt;?php&gt;</span>
+                <span>HesapKutu PHP Sürümü Hazır</span>
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Standart cPanel, Plesk, Apache veya Nginx hosting sunucunuzda çalıştırmak için hazır dosyalar oluşturuldu.
+              </p>
+            </div>
+            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 self-start">
+              /php Dizininde Hazır
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/70 space-y-2">
+              <h4 className="font-bold text-slate-900 text-sm">📁 Oluşturulan PHP Dosyaları</h4>
+              <ul className="space-y-1 font-mono text-[11px] text-slate-700">
+                <li>• <strong>.htaccess</strong> (SEO temiz URL yönlendirmeleri)</li>
+                <li>• <strong>index.php</strong> (Ana yönlendirici / router)</li>
+                <li>• <strong>config.php</strong> (AdSense, Gemini ve site ayarları)</li>
+                <li>• <strong>sitemap.php</strong> (Canlı XML site haritası)</li>
+                <li>• <strong>robots.txt</strong> (Arama motoru kuralları)</li>
+                <li>• <strong>api/calculate-ai.php</strong> (cURL ile Gemini AI)</li>
+                <li>• <strong>includes/</strong> (header, footer, ads, calculators)</li>
+                <li>• <strong>views/</strong> (home, calculator, quote, admin, legal)</li>
+              </ul>
+            </div>
+
+            <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/70 space-y-2">
+              <h4 className="font-bold text-slate-900 text-sm">🚀 cPanel / Hosting Kurulum Adımları</h4>
+              <ol className="list-decimal pl-4 space-y-1.5 text-slate-600">
+                <li>Projedeki <strong>/php</strong> klasörünün içindekileri hostinginizin <code>public_html</code> dizinine yükleyin.</li>
+                <li><code>config.php</code> dosyasını açıp <code>GEMINI_API_KEY</code> ve varsa <code>ADSENSE_PUB_ID</code> bilginizi girin.</li>
+                <li>Sitenizi tarayıcıda açın: <code>https://siteniz.com</code></li>
+                <li>Sitemap linkinizi Google Search Console'a ekleyin: <code>https://siteniz.com/sitemap.xml</code></li>
+              </ol>
+            </div>
+          </div>
+
+          <div className="p-4 rounded-xl bg-slate-900 text-slate-200 font-mono text-xs space-y-1 overflow-x-auto">
+            <div className="text-emerald-400 font-bold mb-1">// config.php Örnek Ayarları:</div>
+            <div>define('SITE_NAME', 'HesapKutu');</div>
+            <div>define('GEMINI_API_KEY', 'AI_STUDIO_API_KEY');</div>
+            <div>define('ADSENSE_PUB_ID', 'ca-pub-XXXXXXXXXXXXXXXX');</div>
+            <div>define('GA_MEASUREMENT_ID', 'G-XXXXXXXXXX');</div>
+            <div>define('ADMIN_PASSWORD', 'admin123');</div>
           </div>
         </div>
       )}
